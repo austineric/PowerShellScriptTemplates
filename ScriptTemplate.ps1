@@ -5,7 +5,7 @@
 # Description: This is a script template. It returns an exit code of -99 for use with Task Scheduler (to be used with Exec_PSScript.ps1) and creates an error log in the directory it is run out of.
 ####################################
 
-$CurrentDirectory= if ($PSScriptRoot -ne "") {$PSScriptRoot} else {(Get-Location).Path}
+$CurrentDirectory=if ($PSScriptRoot -ne "") {$PSScriptRoot} else {(Get-Location).Path}
 $ErrorActionPreference="Stop"
 $ErrorData=@()
 $ErrorLogLocation="$CurrentDirectory\ErrorLog.csv"
