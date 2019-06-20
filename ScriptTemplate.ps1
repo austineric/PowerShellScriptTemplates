@@ -6,7 +6,6 @@
 ####################################
 
 using namespace System.Data
-using namespace System.Data.SqlClient
 
 $CurrentDirectory=if ($PSScriptRoot -ne "") {$PSScriptRoot} else {(Get-Location).Path}
 $ErrorActionPreference="Stop"
