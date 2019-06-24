@@ -17,6 +17,10 @@ $Date=(Get-Date).ToString() #returns "6/20/2019 9:10:21 AM" for use in log entri
 $Date=(Get-Date).ToString("yyyyMMdd") #returns "20190620" for use in file or folder names
 $Date=(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") #returns "2019-06-20 09:16:41" for use in SQL Server
 
+. "$CurrentDirectory\FunctionTemplate.ps1"
+
+$DataForFunction=@()
+
 #SQL Server parameters if needed (may also be populated from an external file for security)
 #use the .Net method of interacting with SQL Server even though it's more verbose because it's the only safe way to avoid SQL injection
 $Server=""
@@ -36,6 +40,12 @@ Try {
     $Cmd.Parameters.Add("@TaskName", [SqlDbType]::VarChar,1000).Value=$_.TaskName
     $Cmd.Parameters.Add("@NextRunTime", [SqlDbType]::DateTime).Value=if (($_."Next Run Time" -eq "N/A") -or ($_."Next Run Time" -eq "11/30/1999 12:00:00 AM")) {[System.DBNull]::Value} else {$_."Next Run Time"}
     $Cmd.ExecuteNonQuery() | Out-Null
+
+    $DataForFunction=@{
+        "ID"="789"
+        "Color"="Red"
+    }
+    ExampleFunction @DataForFunction
 
 }
 
