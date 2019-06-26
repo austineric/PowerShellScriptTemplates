@@ -1,5 +1,5 @@
 if "%~1"=="" GOTO blank
-PowerShell.exe -file %1 ;exit $LASTEXITCODE
+pwsh.exe -file %1
 EXIT %ERRORLEVEL%
 
 :blank
