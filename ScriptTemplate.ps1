@@ -7,11 +7,14 @@
 
 using namespace System.Data
 using namespace System.Data.SqlClient
+using namespace System.Data.SQLite
 
 $CurrentDirectory=if ($PSScriptRoot -ne "") {$PSScriptRoot} else {(Get-Location).Path}
 $ErrorActionPreference="Stop"
 $ErrorData=@()
 $ErrorLogLocation="$CurrentDirectory\ErrorLog.csv"
+
+Add-Type -Path "$CurrentDirectory\SystemDataSQLite\System.Data.SQLite.dll"
 
 $Date=(Get-Date).ToString() #returns "6/20/2019 9:10:21 AM" for use in log entries
 $Date=(Get-Date).ToString("yyyyMMdd") #returns "20190620" for use in file or folder names
