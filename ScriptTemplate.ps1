@@ -46,9 +46,9 @@ $Datatable.Columns.Add("OrderYear", "Int16") | Out-Null
 $Datatable.Columns.Add("OrderMonth", "String") | Out-Null
 
 #map SqlBulkCopy datatable columns to SQL table columns
-$Bulk.ColumnMappings.Add("RowCreateDate, RowCreateDate") | Out-Null
-$Bulk.ColumnMappings.Add("OrderYear, OrderYear") | Out-Null
-$Bulk.ColumnMappings.Add("OrderMonth, OrderMonth") | Out-Null
+$Bulk.ColumnMappings.Add("RowCreateDate", "RowCreateDate") | Out-Null
+$Bulk.ColumnMappings.Add("OrderYear", "OrderYear") | Out-Null
+$Bulk.ColumnMappings.Add("OrderMonth", "OrderMonth") | Out-Null
 
 #initialize array for function splatting
 $DataForFunction=@()
