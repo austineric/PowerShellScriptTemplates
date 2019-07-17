@@ -75,6 +75,11 @@ Try {
     }
     ExampleFunction @DataForFunction
 
+    #import csv with SQLite
+    $Import="sqlite3 SQLite.db -cmd "".mode csv"" -cmd "".separator |"" -cmd "".import FileToImport.txt NewTableName"" "".exit"""
+    $Import=$Import.Replace("\","/")
+    Invoke-Expression $Import
+
 }
 
 Catch {
