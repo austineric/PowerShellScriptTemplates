@@ -1,8 +1,7 @@
 ﻿
 ####################################
-# Author:      Eric Austin
-# Create date: June 2019
-# Description: This is a script template. It returns an exit code of -99 for use with Task Scheduler (to be used with Exec_PSScript.ps1) and creates an error log in the directory it is run out of.
+# Author:       Eric Austin
+# Description:  This is a script template. It returns an exit code of 99 on error and creates an error log in the directory it is run out of.
 ####################################
 
 #declare namespaces
@@ -15,6 +14,10 @@ $CurrentDirectory=if ($PSScriptRoot -ne "") {$PSScriptRoot} else {(Get-Location)
 $ErrorActionPreference="Stop"
 $ErrorData=@()
 $ErrorLogLocation="$CurrentDirectory\ErrorLog.csv"
+
+#files to import
+$FilesToImportDirectory=""
+$AlreadyImportedDirectory=""
 
 #dot source function
 . "$CurrentDirectory\FunctionTemplate.ps1"
@@ -69,6 +72,13 @@ Try {
     
     $Connection.Open()
 
+    #import files
+    Get-ChildItem -Path $FilesToImportDirectory -Include *.csv | ForEach-Object {
+
+        Move-Item -Path $_.FullName -Destination $AlreadyImportedDirectory
+
+    }
+
     #SQL Server - individual insertion
     $Cmd.CommandText="INSERT INTO TaskSchedulerLog (TaskName, NextRunTime) VALUES (@TaskName, @NextRunTime)"
     $Cmd.Parameters.Add("@TaskName", [SqlDbType]::VarChar,1000).Value=$_.TaskName
@@ -117,7 +127,7 @@ Catch {
     $ErrorData | Select-Object Date,ErrorMessage | Export-Csv -Path $ErrorLogLocation -Append -NoTypeInformation
 
     #return value
-    Exit -99
+    Exit 99
     
 }
 
