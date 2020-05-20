@@ -1,6 +1,7 @@
 ﻿
 ####################################
 # Author:       Eric Austin
+# Create date:  
 # Description:  This is a script template. It returns an exit code of 99 on error and creates an error log in the directory it is run out of.
 ####################################
 
