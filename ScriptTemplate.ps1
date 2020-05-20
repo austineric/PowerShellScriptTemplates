@@ -44,8 +44,8 @@ Try {
     $ConnectionString="Server=$Server;Database=$Database;User Id=$Username;Password=$Password;"
     $ConnectionString="Server=$Server;Database=$Database;Trusted_Connection=True;"
     $Connection.ConnectionString=$ConnectionString
-    $Cmd=$Connection.CreateCommand()
-    $Cmd.CommandTimeout=1000    #number of time in seconds to wait for the command to execute, default is 30 seconds
+    $Command=$Connection.CreateCommand()
+    $Command.CommandTimeout=1000    #number of time in seconds to wait for the command to execute, default is 30 seconds
 
     #initialize SQL Server SqlBulkCopy object and parameters
     $Bulk=New-Object SqlBulkCopy($Connection)
@@ -84,10 +84,10 @@ Try {
     }
 
     #SQL Server - individual insertion
-    $Cmd.CommandText="INSERT INTO TaskSchedulerLog (TaskName, NextRunTime) VALUES (@TaskName, @NextRunTime)"
-    $Cmd.Parameters.Add("@TaskName", [SqlDbType]::VarChar,1000).Value=$_.TaskName
-    $Cmd.Parameters.Add("@NextRunTime", [SqlDbType]::DateTime).Value=if (($_."Next Run Time" -eq "N/A") -or ($_."Next Run Time" -eq "11/30/1999 12:00:00 AM")) {[System.DBNull]::Value} else {$_."Next Run Time"}
-    $Cmd.ExecuteNonQuery() | Out-Null
+    $Command.CommandText="INSERT INTO TaskSchedulerLog (TaskName, NextRunTime) VALUES (@TaskName, @NextRunTime)"
+    $Command.Parameters.Add("@TaskName", [SqlDbType]::VarChar,1000).Value=$_.TaskName
+    $Command.Parameters.Add("@NextRunTime", [SqlDbType]::DateTime).Value=if (($_."Next Run Time" -eq "N/A") -or ($_."Next Run Time" -eq "11/30/1999 12:00:00 AM")) {[System.DBNull]::Value} else {$_."Next Run Time"}
+    $Command.ExecuteNonQuery() | Out-Null
 
     #SQL Server - bulk insertion
     $Datatable.Rows.Add("2018/02/01", "2018", "January")
@@ -97,8 +97,8 @@ Try {
     #SQL Server - return resultset
     $Datatable.Dispose()
     $Datatable=New-Object DataTable
-    $Cmd.CommandText="SELECT TOP 10 ID, Color FROM LogData;"
-    $Adapter=New-Object SqlDataAdapter $Cmd
+    $Command.CommandText="SELECT TOP 10 ID, Color FROM LogData;"
+    $Adapter=New-Object SqlDataAdapter $Command
     $Adapter.Fill($Datatable) | Out-Null
 
     #SQLite - import pipe-delimited file using command line utility
