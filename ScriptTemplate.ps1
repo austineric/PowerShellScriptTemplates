@@ -37,14 +37,9 @@ Try {
     $Date=(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") #returns "2019-06-20 09:16:41" for use in SQL Server
 
     #SQL Server parameters (may also be populated from an external sources for security)
-    $Server=""
-    $Database=""
-    $Username=""
-    $Password=''
     $Connection=New-Object SqlConnection
-    $ConnectionString="Server=$Server;Database=$Database;User Id=$Username;Password=$Password;"
-    $ConnectionString="Server=$Server;Database=$Database;Trusted_Connection=True;"
-    $Connection.ConnectionString=$ConnectionString
+    $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;User Id=Username;Password=Password;"
+    $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;Trusted_Connection=True;"
     $Command=$Connection.CreateCommand()
     $Command.CommandTimeout=1000    #number of time in seconds to wait for the command to execute, default is 30 seconds
 
