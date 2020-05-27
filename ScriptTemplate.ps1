@@ -12,8 +12,6 @@ using namespace System.Data.SQLite
 
 Try {
 
-    #begin variables
-
     #common variables
     $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot
     $ErrorActionPreference="Stop"
@@ -69,7 +67,7 @@ Try {
     #initialize array for function splatting
     $DataForFunction=@()
 
-    #begin script
+    #--------------#
     
     $Connection.Open()
 
