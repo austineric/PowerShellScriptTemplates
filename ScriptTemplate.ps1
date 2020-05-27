@@ -41,6 +41,7 @@ Try {
     $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;User Id=Username;Password=Password;"
     $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;Trusted_Connection=True;"
     $Command=$Connection.CreateCommand()
+    $Command.CommandType=[CommandType]::StoredProcedure #if command will be a proc
     $Command.CommandTimeout=1000    #number of time in seconds to wait for the command to execute, default is 30 seconds
 
     #initialize SQL Server SqlBulkCopy object and parameters
@@ -90,12 +91,25 @@ Try {
     $Datatable.Rows.Add("2019/07/01", "2019", "June")
     $Bulk.WriteToServer($Datatable)
 
-    #SQL Server - return resultset
+    #SQL Server - return resultset from command
     $Datatable.Dispose()
     $Datatable=New-Object DataTable
     $Command.CommandText="SELECT TOP 10 ID, Color FROM LogData;"
     $Adapter=New-Object SqlDataAdapter $Command
     $Adapter.Fill($Datatable) | Out-Null
+    
+    #SQL Server - return resultset from proc
+    $Command.CommandText="dbo.ProcName"
+    $Adapter=New-Object SqlDataAdapter $Command
+    $Adapter.Fill($Datatable) | Out-Null
+    
+    #SQL Server - return multiple resultsets from proc
+    $Command.CommandText="dbo.ProcName"
+    $Dataset=New-Object DataSet
+    $Adapter=New-Object SqlDataAdapter $Command
+    $Adapter.Fill($Dataset) | Out-Null
+    $Dataset.Tables[0]
+    $Dataset.Tables[1]
 
     #SQLite - import pipe-delimited file using command line utility
     $Import="sqlite3 Sync.db -cmd "".mode csv"" -cmd "".separator |"" -cmd "".import 'FileToImport' TableToImportTo"" "".exit"" 2>&1"
