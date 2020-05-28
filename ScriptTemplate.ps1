@@ -68,15 +68,21 @@ Try {
     $DataForFunction=@()
 
     #--------------#
+    
+    #ensure the ImportExcel module is installed
+    if ( -not (Get-Module -ListAvailable | Where-Object -Property Name -EQ "ImportExcel"))
+    {
+        Throw "The ImportExcel module (Install-Module ImportExcel -scope CurrentUser) is required for importing. Processing aborted."
+    }
     
-    $Connection.Open()
-
     #import files
     Get-ChildItem -Path $FilesToImportDirectory -Include *.csv | ForEach-Object {
 
         Move-Item -Path $_.FullName -Destination $AlreadyImportedDirectory
 
     }
+    
+    $Connection.Open()
 
     #SQL Server - individual insertion
     $Command.CommandText="INSERT INTO TaskSchedulerLog (TaskName, NextRunTime) VALUES (@TaskName, @NextRunTime)"
