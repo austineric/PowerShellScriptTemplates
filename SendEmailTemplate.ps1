@@ -1,9 +1,11 @@
 
 
 ####################################
-# Author:      Eric Austin
-# Create date: 
-# Description: 
+# Author:       Eric Austin
+# Create date:  
+# Description:  Uses MailKit to send emails
+#               Microsoft's System.Net.Mail.SmtpClient is marked obsolete; it still works but it's probably better to use MailKit (the recommended alternative)
+#               The best way to get the latest version for each assembly is to download the package from NuGet and unzip the .nupkg using 7Zip
 ####################################
 
 using namespace MimeKit
