@@ -14,7 +14,7 @@ using namespace System.Data.SQLite
 Try {
 
     #common variables
-    $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot
+    $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot #$PSScriptRoot is an empty string when not run from a script, and null coalescing doens't work with empty strings
     $ErrorActionPreference="Stop"
     $ErrorData=@()
     $ErrorLogLocation="$CurrentDirectory\ErrorLog.csv"
