@@ -44,6 +44,7 @@ $Message.To.AddRange($To)
 $Message.Subject="Email subject"
 
 #body (html)
+#if using ConvertTo-Html and there are links or other html elements present then use [System.Web.HttpUtility]::HtmlDecode(TextToDecode), that restores the html elements that ConvertTo-Html escapes
 $BodyBuilder=New-Object BodyBuilder
 $BodyBuilder.HtmlBody=
 @"
