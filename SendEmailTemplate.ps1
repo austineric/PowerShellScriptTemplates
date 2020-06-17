@@ -14,11 +14,17 @@ using namespace MailKit.Net
 #load assemblies
 #updated versions should probably be used
 #have to be loaded in this specific order as far as I can tell
+#before I thought the portable BouncyCastle.Crypto.dll also had to be loaded, which caused problems because of the same name as the regular dll, but it seems to work without the portable versions, which I think means I can only use the dll's rather than the whole folders
+Add-Type -Path ".\MailKit\BouncyCastle.Crypto.dll"
+Add-Type -Path ".\MailKit\MimeKit.dll"
+Add-Type -Path ".\MailKit\MailKit.dll"
+
 #I don't think I can take just the DLL's since the BouncyCastle DLL's are named the same, I just grabbed the whole folders
-Add-Type -Path ".\MailKit\bouncycastle.1.8.6.1\lib\BouncyCastle.Crypto.dll"
-Add-Type -Path ".\MailKit\portable.bouncycastle.1.8.6.7\lib\netstandard2.0\BouncyCastle.Crypto.dll"
-Add-Type -Path ".\MailKit\mimekit.2.8.0\lib\netstandard2.0\MimeKit.dll"
-Add-Type -Path ".\MailKit\mailkit.2.7.0\lib\netstandard2.0\MailKit.dll"
+#Add-Type -Path ".\MailKit\bouncycastle.1.8.6.1\lib\BouncyCastle.Crypto.dll"
+#Add-Type -Path ".\MailKit\portable.bouncycastle.1.8.6.7\lib\netstandard2.0\BouncyCastle.Crypto.dll"
+#Add-Type -Path ".\MailKit\mimekit.2.8.0\lib\netstandard2.0\MimeKit.dll"
+#Add-Type -Path ".\MailKit\mailkit.2.7.0\lib\netstandard2.0\MailKit.dll"
+
 
 #check if assembly is loaded
 #[System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object -Property Location -Like "*Mail*"
