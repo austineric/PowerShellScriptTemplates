@@ -10,6 +10,8 @@
 using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient   
 using namespace System.Data.SQLite
+using namespace MimeKit     #when dot-sourcing a function all namespace statement need to be in the calling script
+using namespace MailKit.Net
 
 Try {
 
@@ -23,8 +25,8 @@ Try {
     $FilesToImportDirectory=""
     $AlreadyImportedDirectory=""
 
-    #dot source function
-    . "$CurrentDirectory\FunctionTemplate.ps1"
+    #dot-source function
+    . "$CurrentDirectory\SendEmail.ps1"
 
     #add SQLite assembly
     Add-Type -Path "$CurrentDirectory\System.Data.SQLite\System.Data.SQLite.dll"
@@ -136,6 +138,18 @@ Try {
         "Color"="Red"
     }
     ExampleFunction @DataForFunction
+
+    #set email parameters
+    $From="SenderEmailAddress"
+    $ToList="Recipient1EmailAddress", "Recipient2EmailAddress"
+    $BCCList="BCCEmailAddress"
+    $Subject="Subject"
+    $HTMLBody="<span style=`"background-color:green; color:blue;`">Test email</span>"
+    $AttachmentList=$FileLocation
+        
+    #send email (can splat the parameters but I'm not sure how that would work with lists so this is good enough)
+    SendEmail -From $From -ToList $ToList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
+
 }
 
 Catch {
