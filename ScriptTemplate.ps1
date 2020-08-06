@@ -19,12 +19,11 @@ Try {
     $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot #$PSScriptRoot is an empty string when not run from a script, and null coalescing doens't work with empty strings
     $ErrorActionPreference="Stop"
     $ErrorData=@()
-    $ErrorLogLocation=(Join-Path -Path $CurrentDirectory -ChildPath "ErrorLog.csv")
+    $ErrorLogLocation=Join-Path -Path $CurrentDirectory -ChildPath "ErrorLog.csv"
 
-    #files to import
+    #directories
     $FilesToImportDirectory=""
-    $AlreadyImportedDirectory=""
-
+    
     #dot-source function
     . "$CurrentDirectory\SendEmail.ps1"
 
@@ -75,6 +74,12 @@ Try {
     if ( -not (Get-Module -ListAvailable | Where-Object -Property Name -EQ "ImportExcel"))
     {
         Throw "The ImportExcel module (Install-Module ImportExcel -scope CurrentUser) is required for importing. Processing aborted."
+    }
+    
+    #ensure "Files to import" directory exists
+    if (-not (Test-Path $FilesToImportDirectory))
+    {
+        New-Item -ItemType Directory -Path $FilesToImportDirectory
     }
     
     #import files
