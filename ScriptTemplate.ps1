@@ -41,7 +41,7 @@ Try {
     $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;Trusted_Connection=True;"
     $Command=$Connection.CreateCommand()
     $Command.CommandType=[CommandType]::StoredProcedure #if command will be a proc
-    $Command.CommandTimeout=1000    #number of time in seconds to wait for the command to execute, default is 30 seconds
+    $Command.CommandTimeout=1000    #seconds to wait for command to execute, default is 30 seconds
 
     #initialize SQL Server SqlBulkCopy object and parameters
     $Bulk=New-Object SqlBulkCopy($Connection)
