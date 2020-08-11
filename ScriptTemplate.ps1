@@ -8,7 +8,8 @@
 
 #namespaces
 using namespace System.Data     #required for DataTable
-using namespace System.Data.SqlClient   
+using namespace System.Data.SqlClient
+using namespace System.Collections.Generic  #required for List<T>
 using namespace System.Data.SQLite
 using namespace MimeKit     #when dot-sourcing a function all namespace statement need to be in the calling script
 using namespace MailKit.Net
@@ -67,6 +68,9 @@ Try {
 
     #initialize array for function splatting
     $DataForFunction=@()
+    
+    #script elements
+    [List[string]]$List1=New-Object -TypeName List[string]
 
     #--------------#
     
