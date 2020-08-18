@@ -70,7 +70,8 @@ Try {
     $DataForFunction=@()
     
     #script elements
-    [List[string]]$List1=New-Object -TypeName List[string]
+    [List[string]]$List1=New-Object -TypeName List[string]  #list of String
+    [List[object]]$List2=New-Object -TypeName List[object]  #list of Object which can be filled with PSCustomObjects
 
     #--------------#
     
@@ -158,6 +159,15 @@ Try {
         
     #send email (can splat the parameters but I'm not sure how that would work with lists so this is good enough)
     SendEmail -From $From -ToList $ToList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
+    
+    #fill a list with custom objects
+    Get-Process | ForEach-Object {
+        $Row=[PSCustomObject]@{
+            Name=$_.ProcessName
+            Id=$_.Id
+        }
+        $List2.Add($Row)
+    }
 
 }
 
