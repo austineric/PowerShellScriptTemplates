@@ -11,8 +11,10 @@ using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient
 using namespace System.Collections.Generic  #required for List<T>
 using namespace System.Data.SQLite
-using namespace MimeKit     #when dot-sourcing a function all namespace statement need to be in the calling script
-using namespace MailKit.Net
+using module "..\Send-MailKitMessage\Send-MailKitMessage.psd1"  #for development
+#using module "..\..\PowerShellModules\Send-MailKitMessage\Send-MailKitMessage.psd1"    #for production
+
+
 
 Try {
 
@@ -25,9 +27,6 @@ Try {
     #directories
     $FilesToImportDirectory=""
     
-    #dot-source function
-    . "$CurrentDirectory\SendEmail.ps1"
-
     #add SQLite assembly
     Add-Type -Path "$CurrentDirectory\System.Data.SQLite\System.Data.SQLite.dll"
 
@@ -68,10 +67,12 @@ Try {
 
     #initialize array for function splatting
     $DataForFunction=@()
+
+    #email
+    [List[string]]$AttachmentList=New-Object -TypeName List[string]
     
     #script elements
-    [List[string]]$List1=New-Object -TypeName List[string]  #list of String
-    [List[object]]$List2=New-Object -TypeName List[object]  #list of Object which can be filled with PSCustomObjects
+    [List[object]]$List1=New-Object -TypeName List[object]  #list of Object which can be filled with PSCustomObjects
 
     #--------------#
     
@@ -87,11 +88,9 @@ Try {
         New-Item -ItemType Directory -Path $FilesToImportDirectory
     }
     
-    #import files
+    #import files and move them
     Get-ChildItem -Path $FilesToImportDirectory -Include *.csv | ForEach-Object {
-
         Move-Item -Path $_.FullName -Destination $AlreadyImportedDirectory
-
     }
     
     $Connection.Open()
@@ -150,23 +149,37 @@ Try {
     ExampleFunction @DataForFunction
 
     #set email parameters
-    $From="SenderEmailAddress"
-    $ToList="Recipient1EmailAddress", "Recipient2EmailAddress"
-    $BCCList="BCCEmailAddress"
+    #from
+    $From=New-Object MailboxAddressExtended($null, "SenderEmailAddress")
+    
+    #to
+    $ToList=New-Object InternetAddressListExtended
+    $ToList.Add("Recipient1EmailAddress")
+    $ToList.Add("Recipient2EmailAddress")
+    
+    #bcc
+    $BCCList=New-Object InternetAddressListExtended
+    $BCCList.Add("BCCRecipientEmailAddress")
+    
+    #subject
     $Subject="Subject"
+
+    #body
     $HTMLBody="<span style=`"background-color:green; color:blue;`">Test email</span>"
+
+    #attachments
     $AttachmentList=$FileLocation
         
-    #send email (can splat the parameters but I'm not sure how that would work with lists so this is good enough)
-    SendEmail -From $From -ToList $ToList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
-    
+    #send email
+    Send-MailKitMessage -From $From -ToList $ToList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
+
     #fill a list with custom objects
     Get-Process | ForEach-Object {
         $Row=[PSCustomObject]@{
             Name=$_.ProcessName
             Id=$_.Id
         }
-        $List2.Add($Row)
+        $List1.Add($Row)
     }
 
 }
