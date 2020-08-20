@@ -123,6 +123,8 @@ Try {
     $Adapter.Fill($Dataset) | Out-Null
     $Dataset.Tables[0]
     $Dataset.Tables[1]
+    
+    $Connection.Close()
 
     #SQLite - import pipe-delimited file using command line utility
     $Import="sqlite3 Sync.db -cmd "".mode csv"" -cmd "".separator |"" -cmd "".import 'FileToImport' TableToImportTo"" "".exit"" 2>&1"
@@ -195,6 +197,9 @@ Catch {
 
 Finally {
 
-    $Connection.Close()
+    if ($Connection.State -ne "Closed")
+    {
+        $Connection.Close()
+    }
 
 }
