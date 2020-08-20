@@ -11,10 +11,7 @@ using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient
 using namespace System.Collections.Generic  #required for List<T>
 using namespace System.Data.SQLite
-using module "..\Send-MailKitMessage\Send-MailKitMessage.psd1"  #for development
-#using module "..\..\PowerShellModules\Send-MailKitMessage\Send-MailKitMessage.psd1"    #for production
-
-
+Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
 
 Try {
 
@@ -69,6 +66,7 @@ Try {
     $DataForFunction=@()
 
     #email
+    Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
     [List[string]]$AttachmentList=New-Object -TypeName List[string]
     
     #script elements
