@@ -165,7 +165,7 @@ Try {
 Catch {
 
     #error log
-    $ErrorData+=New-Object -TypeName PSCustomObject -Property @{"Date"=$Date; "ErrorMessage"=$Error[0].ToString()}
+    $ErrorData+=New-Object -TypeName PSCustomObject -Property @{"Date"=Get-Date.ToString(); "ErrorMessage"=$Error[0].ToString()}    #don't use @Date for the date, this section needs to be completely independent so nothing can ever interfere with the error log being created
     $ErrorData | Select-Object Date,ErrorMessage | Export-Csv -Path $ErrorLogLocation -Append -NoTypeInformation
 
     #return value
