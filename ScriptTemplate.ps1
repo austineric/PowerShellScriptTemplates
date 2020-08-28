@@ -116,6 +116,9 @@ Try {
     $Adapter=New-Object SqlDataAdapter $Command
     $Adapter.Fill($Datatable) | Out-Null
     
+    #export datatable to Excel (exclude properties which get included as columns when exporting a SQL result)
+    $Datatable | Export-Excel -Path $FileDestinationLocation -ExcludeProperty "RowError", "RowState", "Table", "ItemArray", "HasErrors"
+    
     #SQL Server - return multiple resultsets from proc
     $Command.CommandText="dbo.ProcName"
     $Dataset=New-Object DataSet
