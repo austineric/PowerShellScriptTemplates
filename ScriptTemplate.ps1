@@ -1,4 +1,4 @@
-﻿
+
 
 ####################################
 # Author:       Eric Austin
@@ -10,7 +10,6 @@
 using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient
 using namespace System.Collections.Generic  #required for List<T>
-using namespace System.Data.SQLite
 Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
 
 Try {
@@ -23,9 +22,6 @@ Try {
 
     #directories
     $FilesToImportDirectory=""
-    
-    #add SQLite assembly
-    Add-Type -Path "$CurrentDirectory\System.Data.SQLite\System.Data.SQLite.dll"
 
     #date variables
     $Date=(Get-Date).ToString() #returns "6/20/2019 9:10:21 AM" for use in log entries
@@ -55,12 +51,6 @@ Try {
     $Bulk.ColumnMappings.Add("RowCreateDate", "RowCreateDate") | Out-Null
     $Bulk.ColumnMappings.Add("OrderYear", "OrderYear") | Out-Null
     $Bulk.ColumnMappings.Add("OrderMonth", "OrderMonth") | Out-Null
-
-    #SQLite parameters
-    $SLConnection=New-Object SQLiteConnection
-    $SLConnectionString="Data Source=$CurrentDirectory\SQLite.db"
-    $SLConnection.ConnectionString=$SLConnectionString
-    $SLCmd=$SLConnection.CreateCommand()
 
     #initialize array for function splatting
     $DataForFunction=@()
@@ -128,21 +118,6 @@ Try {
     $Dataset.Tables[1]
     
     $Connection.Close()
-
-    #SQLite - import pipe-delimited file using command line utility
-    $Import="sqlite3 Sync.db -cmd "".mode csv"" -cmd "".separator |"" -cmd "".import 'FileToImport' TableToImportTo"" "".exit"" 2>&1"
-    Invoke-Expression $Import
-
-    #SQLite - execute query
-    $SLCmd.CommandText="INSERT INTO Table1 (ID) SELECT ID FROM Table2;"
-    $SLCmd.ExecuteNonQuery() | Out-Null
-
-    #SQLite - return resultset
-    $Datatable.Dispose()
-    $Datatable=New-Object DataTable
-    $SLCmd.CommandText="SELECT TOP 10 ID, Color FROM LogData;"
-    $SLAdapter=New-Object SQLiteDataAdapter $SLCmd
-    $SLAdapter.Fill($Datatable) | Out-Null
 
     #set splatting values and call function
     $DataForFunction=@{
