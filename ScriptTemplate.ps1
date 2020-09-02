@@ -10,9 +10,11 @@
 using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient
 using namespace System.Collections.Generic  #required for List<T>
-Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
 
 Try {
+
+    #email module
+    Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
 
     #common variables
     $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot #$PSScriptRoot is an empty string when not run from a script, and null coalescing doens't work with empty strings
