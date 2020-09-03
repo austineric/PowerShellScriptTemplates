@@ -10,11 +10,9 @@
 using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient
 using namespace System.Collections.Generic  #required for List<T>
+using module Send-MailKitMessage    #module classes are not automatically loaded when referenced (as opposed to commandlets which are)
 
 Try {
-
-    #email module
-    Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
 
     #common variables
     $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot #$PSScriptRoot is an empty string when not run from a script, and null coalescing doens't work with empty strings
@@ -58,7 +56,6 @@ Try {
     $DataForFunction=@()
 
     #email
-    Invoke-Expression "using module $env:SendMailKitMessageModuleLocation"
     [List[string]]$AttachmentList=New-Object -TypeName List[string]
     
     #script elements
