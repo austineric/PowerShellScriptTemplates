@@ -66,7 +66,13 @@ Try {
     #ensure the ImportExcel module is installed
     if ( -not (Get-Module -ListAvailable | Where-Object -Property Name -EQ "ImportExcel"))
     {
-        Throw "The ImportExcel module (Install-Module ImportExcel -scope CurrentUser) is required for importing. Processing aborted."
+        Throw "The ImportExcel module (Install-Module ImportExcel -Scope CurrentUser) is required for importing. Processing aborted."
+    }
+    
+    #ensure the Send-MailKitMessage module is installed
+    if ( -not (Get-Module -ListAvailable | Where-Object -Property Name -EQ "Send-MailKitMessage"))
+    {
+        Throw "The Send-MailKitMessage module (Install-Module Send-MailKitMessage -Scope CurrentUser) is required for importing. Processing aborted."
     }
     
     #ensure "Files to import" directory exists
