@@ -140,6 +140,10 @@ Try {
     $ToList.Add("Recipient1EmailAddress")
     $ToList.Add("Recipient2EmailAddress")
     
+    #cc
+    $CCList=New-Object InternetAddressListExtended
+    $CCList.Add("CCRecipientEmailAddress")
+    
     #bcc
     $BCCList=New-Object InternetAddressListExtended
     $BCCList.Add("BCCRecipientEmailAddress")
@@ -154,7 +158,7 @@ Try {
     $AttachmentList=$FileLocation
         
     #send email
-    Send-MailKitMessage -From $From -ToList $ToList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
+    Send-MailKitMessage -SMTPServer "SMTPServerAddress" -Port PortNumber -From $From -ToList $ToList -CCList $CCList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
 
     #fill a list with custom objects
     Get-Process | ForEach-Object {
