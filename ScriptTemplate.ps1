@@ -155,7 +155,7 @@ Try {
     $HTMLBody="<span style=`"background-color:green; color:blue;`">Test email</span>"
 
     #attachments
-    $AttachmentList=$FileLocation
+    $AttachmentList.Add($FileLocation)
         
     #send email
     Send-MailKitMessage -SMTPServer "SMTPServerAddress" -Port PortNumber -From $From -ToList $ToList -CCList $CCList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
