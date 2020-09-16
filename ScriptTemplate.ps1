@@ -78,7 +78,7 @@ Try {
     #ensure "Files to import" directory exists
     if (-not (Test-Path $FilesToImportDirectory))
     {
-        New-Item -ItemType Directory -Path $FilesToImportDirectory
+        New-Item -ItemType Directory -Path $FilesToImportDirectory | Out-Null
     }
     
     #import files and move them
