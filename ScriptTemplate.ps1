@@ -55,11 +55,9 @@ Try {
     #initialize array for function splatting
     $DataForFunction=@()
 
-    #email
-    [List[string]]$AttachmentList=New-Object -TypeName List[string]
-    
     #script elements
-    [List[object]]$List1=New-Object -TypeName List[object]  #list of Object which can be filled with PSCustomObjects
+    [List[object]]$List1=New-Object -TypeName List[object]  #list of type object which can be filled with PSCustomObjects
+    [List[string]]$AttachmentList=New-Object -TypeName List[string] #list of string which can be filled with the location(s) of file attachments
 
     #--------------#
     
@@ -162,11 +160,12 @@ Try {
 
     #fill a list with custom objects
     Get-Process | ForEach-Object {
-        $Row=[PSCustomObject]@{
-            Name=$_.ProcessName
-            Id=$_.Id
-        }
-        $List1.Add($Row)
+        $ProcessesReport.Add(
+            [PSCustomObject]@{
+                ID = $_.Id
+                Process=$_.ProcessName
+            }
+        )
     }
 
 }
