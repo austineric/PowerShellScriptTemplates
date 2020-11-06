@@ -16,6 +16,7 @@ Try {
 
     #common variables
     $CurrentDirectory=[string]::IsNullOrWhiteSpace($PSScriptRoot) ? (Get-Location).Path : $PSScriptRoot #$PSScriptRoot is an empty string when not run from a script, and null coalescing doens't work with empty strings
+    $CurrentDirectory=if ([string]::IsNullOrWhiteSpace($PSScriptRoot)) {(Get-Location).Path} else {$PSScriptRoot}   #for a Windows PowerShell script
     $ErrorActionPreference="Stop"
     $ErrorData=@()
     $ErrorLogLocation=Join-Path -Path $CurrentDirectory -ChildPath "ErrorLog.csv"
