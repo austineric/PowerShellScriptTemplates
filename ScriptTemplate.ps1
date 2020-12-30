@@ -169,6 +169,22 @@ Try {
         )
     }
 
+    #bearer API header
+    $Header=@{Authorization = "Bearer PersonalAccessToken"}
+
+    #basic API header (requires a base-64 encoded string of a username:password)
+    $Token=([System.Convert]::ToBase64String(([char[]]"Username:Token"))) #Convert.ToBase64String requires an array of characters
+    $Header=@{Authorization = "Basic $Token"}
+
+    #REST API call - Get
+    Invoke-RestMethod -Method Get -Uri "https://api.github.com/user" -Headers $Header
+
+    #REST API call - Patch
+    $Body=@{
+        "twitter_username" = "@Test1"
+    } | ConvertTo-Json
+    Invoke-RestMethod -Method "Patch" -Uri "https://api.github.com/user" -Headers $Header -Body $Body
+
 }
 
 Catch {
