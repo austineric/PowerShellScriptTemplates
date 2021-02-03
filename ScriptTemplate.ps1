@@ -47,6 +47,17 @@ Try {
     $Datatable.Columns.Add("RowCreateDate", "Datetime") | Out-Null
     $Datatable.Columns.Add("OrderYear", "Int16") | Out-Null
     $Datatable.Columns.Add("OrderMonth", "String") | Out-Null
+    
+    #disallow null values
+    $Datatable.Columns["RowCreateDate"].AllowDBNull=$false | Out-Null
+    $Datatable.Columns["OrderYear"].AllowDBNull=$false | Out-Null
+    $Datatable.Columns["OrderMonth"].AllowDBNull=$false | Out-Null
+    
+    #add a primary key
+    $Datatable.PrimaryKey=[DataColumn[]]($Datatable.Columns["OrderYear"], $Datatable.Columns["OrderMonth"]) | Out-Null
+    
+    #add a unique constraint
+    $Datatable.Constraints.Add([UniqueConstraint]::new([DataColumn[]]($Datatable.Columns["OrderYear"], $Datatable.Columns["OrderMonth"]))) | Out-Null
 
     #map SqlBulkCopy datatable columns to SQL table columns
     $Bulk.ColumnMappings.Add("RowCreateDate", "RowCreateDate") | Out-Null
