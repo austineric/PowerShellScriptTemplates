@@ -10,7 +10,7 @@
 using namespace System.Data     #required for DataTable
 using namespace System.Data.SqlClient
 using namespace System.Collections.Generic  #required for List<T>
-using module Send-MailKitMessage    #module classes are not automatically loaded when referenced (as opposed to commandlets which are)
+using module Send-MailKitMessage
 
 Try {
 
@@ -20,14 +20,6 @@ Try {
     $ErrorActionPreference="Stop"
     $ErrorData=@()
     $ErrorLogLocation=Join-Path -Path $CurrentDirectory -ChildPath "ErrorLog.csv"
-
-    #directories
-    $FilesToImportDirectory=""
-
-    #date variables
-    $Date=(Get-Date).ToString() #returns "6/20/2019 9:10:21 AM" for use in log entries
-    $Date=(Get-Date).ToString("yyyyMMdd") #returns "20190620" for use in file or folder names
-    $Date=(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") #returns "2019-06-20 09:16:41" for use in SQL Server
 
     #SQL Server parameters (may also be populated from an external sources for security)
     $Connection=New-Object SqlConnection
@@ -64,12 +56,12 @@ Try {
     $Bulk.ColumnMappings.Add("OrderYear", "OrderYear") | Out-Null
     $Bulk.ColumnMappings.Add("OrderMonth", "OrderMonth") | Out-Null
 
-    #initialize array for function splatting
-    $DataForFunction=@()
-
     #script elements
-    [List[object]]$List1=New-Object -TypeName List[object]  #list of type object which can be filled with PSCustomObjects
-    [List[string]]$AttachmentList=New-Object -TypeName List[string] #list of string which can be filled with the location(s) of file attachments
+    $FilesToImportDirectory=""
+    $Date=(Get-Date).ToString() #returns "6/20/2019 9:10:21 AM" for use in log entries
+    $Date=(Get-Date).ToString("yyyyMMdd") #returns "20190620" for use in file or folder names
+    $Date=(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") #returns "2019-06-20 09:16:41" for use in SQL Server
+    $List1=[List[object]]::new()    #list of type object which can be filled with PSCustomObjects
 
     #--------------#
     
@@ -77,12 +69,6 @@ Try {
     if ( -not (Get-Module -ListAvailable | Where-Object -Property Name -EQ "ImportExcel"))
     {
         Throw "The ImportExcel module (Install-Module ImportExcel -Scope CurrentUser) is required for importing. Processing aborted."
-    }
-    
-    #ensure the Send-MailKitMessage module is installed
-    if ( -not (Get-Module -ListAvailable | Where-Object -Property Name -EQ "Send-MailKitMessage"))
-    {
-        Throw "The Send-MailKitMessage module (Install-Module Send-MailKitMessage -Scope CurrentUser) is required for importing. Processing aborted."
     }
     
     #ensure "Files to import" directory exists
@@ -134,41 +120,65 @@ Try {
     
     $Connection.Close()
 
-    #set splatting values and call function
-    $DataForFunction=@{
-        "ID"="789"
-        "Color"="Red"
-    }
-    ExampleFunction @DataForFunction
-
     #set email parameters
-    #from
-    $From=New-Object MailboxAddressExtended($null, "SenderEmailAddress")
-    
-    #to
-    $ToList=New-Object InternetAddressListExtended
-    $ToList.Add("Recipient1EmailAddress")
-    $ToList.Add("Recipient2EmailAddress")
-    
-    #cc
-    $CCList=New-Object InternetAddressListExtended
-    $CCList.Add("CCRecipientEmailAddress")
-    
-    #bcc
-    $BCCList=New-Object InternetAddressListExtended
-    $BCCList.Add("BCCRecipientEmailAddress")
-    
+    #use secure connection if available
+    $UseSecureConnectionIfAvailable=$true
+
+    #authentication
+    $Credential=[System.Management.Automation.PSCredential]::new("Username", (ConvertTo-SecureString -String "Password" -AsPlainText -Force))
+
+    #SMTP server
+    $SMTPServer="SMTPServer"
+
+    #port
+    $Port=PortNumber
+
+    #sender
+    $From=[MimeKit.MailboxAddress]"SenderEmailAddress"
+
+    #recipient list
+    $RecipientList=[MimeKit.InternetAddressList]::new()
+    $RecipientList.Add([MimeKit.InternetAddress]"Recipient1EmailAddress")
+
+    #cc list
+    $CCList=[MimeKit.InternetAddressList]::new()
+    $CCList.Add([MimeKit.InternetAddress]"CCRecipient1EmailAddress")
+
+    #bcc list
+    $BCCList=[MimeKit.InternetAddressList]::new()
+    $BCCList.Add([MimeKit.InternetAddress]"BCCRecipient1EmailAddress")
+
     #subject
-    $Subject="Subject"
+    $Subject=[string]"Subject"
 
-    #body
-    $HTMLBody="<span style=`"background-color:green; color:blue;`">Test email</span>"
+    #text body
+    $TextBody=[string]"TextBody"
 
-    #attachments
-    $AttachmentList.Add($FileLocation)
-        
-    #send email
-    Send-MailKitMessage -SMTPServer "SMTPServerAddress" -Port PortNumber -From $From -ToList $ToList -CCList $CCList -BCCList $BCCList -Subject $Subject -HTMLBody $HTMLBody -AttachmentList $AttachmentList
+    #HTML body
+    $HTMLBody=[string]"HTMLBody"
+
+    #attachment list
+    $AttachmentList=[System.Collections.Generic.List[string]]::new()
+    $AttachmentList.Add("Attachment1FilePath")
+
+    #splat parameters
+    $Parameters=@{
+        "UseSecureConnectionIfAvailable"=$UseSecureConnectionIfAvailable    
+        "Credential"=$Credential
+        "SMTPServer"=$SMTPServer
+        "Port"=$Port
+        "From"=$From
+        "RecipientList"=$RecipientList
+        "CCList"=$CCList
+        "BCCList"=$BCCList
+        "Subject"=$Subject
+        "TextBody"=$TextBody
+        "HTMLBody"=$HTMLBody
+        "AttachmentList"=$AttachmentList
+    }
+
+    #send message
+    Send-MailKitMessage @Parameters
 
     #fill a list with custom objects
     Get-Process | ForEach-Object {
