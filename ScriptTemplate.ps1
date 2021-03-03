@@ -22,7 +22,7 @@ Try {
     $ErrorLogLocation=Join-Path -Path $CurrentDirectory -ChildPath "ErrorLog.csv"
 
     #SQL Server parameters (may also be populated from an external sources for security)
-    $Connection=New-Object SqlConnection
+    $Connection=[SqlConnection]::new()
     $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;User Id=Username;Password=Password;"
     $Connection.ConnectionString="Server=ServerName;Database=DatabaseName;Trusted_Connection=True;"
     $Command=$Connection.CreateCommand()
@@ -30,12 +30,12 @@ Try {
     $Command.CommandTimeout=1000    #seconds to wait for command to execute, default is 30 seconds
 
     #initialize SQL Server SqlBulkCopy object and parameters
-    $Bulk=New-Object SqlBulkCopy($Connection)
+    $Bulk=[SqlBulkCopy]::new($Connection)
     $Bulk.BatchSize=10000   #default batch size is 1
     $Bulk.DestinationTableName="Orders"
 
     #initialize datatable for use with SqlBulkCopy
-    $Datatable=New-Object DataTable
+    $Datatable=[DataTable]::new()
     $Datatable.Columns.Add("RowCreateDate", "Datetime") | Out-Null
     $Datatable.Columns.Add("OrderYear", "Int16") | Out-Null
     $Datatable.Columns.Add("OrderMonth", "String") | Out-Null
