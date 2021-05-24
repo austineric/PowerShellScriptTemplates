@@ -194,8 +194,7 @@ Try {
     $Header=@{Authorization = "Bearer PersonalAccessToken"}
 
     #basic API header (requires a base-64 encoded string of a username:password)
-    $Token=([System.Convert]::ToBase64String(([char[]]"Username:Token"))) #Convert.ToBase64String requires an array of characters
-    $Header=@{Authorization = "Basic $Token"}
+    $Header = @{ Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("Username:Token")) }
 
     #REST API call - Get
     Invoke-RestMethod -Method Get -Uri "https://api.github.com/user" -Headers $Header
